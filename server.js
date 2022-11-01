@@ -4,14 +4,14 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
-const contactRouter = require("./router/contactMe");
-const calendarRouter = require("./router/calendar");
+const contactRouter = require("./src/router/contactMe");
+const calendarRouter = require("./src/router/calendar");
 const bodyParser = require("body-parser");
 
 // env
 const port = process.env.PORT;
 const uri = process.env.MONGOOSE_URI;
-const clientURL = process.env.CLIENT_BASE_URL;
+const clientURL = process.env.CLIENT_URL;
 // set up express app
 const app = express();
 app.use(helmet());

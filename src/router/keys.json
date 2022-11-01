@@ -1,0 +1,10 @@
+{
+  "web": {
+    "client_id": "601509745583-8q8mtbkup1c1agh5iggt5tfqm7b21e60.apps.googleusercontent.com",
+    "project_id": "wired-climate-366602",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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"
+  }
+}
