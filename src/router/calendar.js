@@ -23,36 +23,29 @@ const {
 // const calendar = google.calendar({ version: "v3", project, auth: oauthClient });
 // const auth = new google.auth.GoogleAuth({ keyFile, scopes, keys });
 const loadSavedCredentialsIfExist = async () => {
-  const content = fs.readFile(tokenPath, (err, data) => {
-    if (err) return;
-    return data;
+  const content = fs.readFileSync(tokenPath, (err, _) => {
+    if (err) return null;
   });
-  if (content) {
+  if (content.toString()) {
     const cred = JSON.parse(content);
     return google.auth.fromJSON(cred);
   }
-  return null;
 };
 const saveCredentials = async (client) => {
-  const content = fs.readFile(keyfilePath, (err, data) => {
+  return fs.readFile(keyfilePath, (err, data) => {
     if (err) return;
-    return data;
-  });
-  console.log("content", content);
-  if (content) {
-    const keys = JSON.parse(content);
+    const { web } = JSON.parse(data);
+    console.log("client", client);
     const payload = JSON.stringify({
       type: "authorized_user",
-      client_id: keys.client_id,
-      client_secret: keys.client_secret,
-      refresh_token: client.credentials.refresh_token,
-      redirect_uris: [keys.redirect_uris],
+      client_id: web.client_id,
+      client_secret: web.client_secret,
+      refresh_token: client.credentials.access_token,
+      redirect_uris: web.redirect_uris,
     });
-    fs.writeFile(tokenPath, payload, (err, data) => {
-      if (err) console.log("err", err);
-      return data;
-    });
-  }
+
+    fs.writeFile(tokenPath, payload, () => {});
+  });
 };
 const authorize = async () => {
   let client = await loadSavedCredentialsIfExist();
@@ -88,8 +81,8 @@ router.get("/date/:date", async (req, res) => {
 });
 router.get("/accessToken", async (req, res) => {
   try {
-    const client = await authorize();
-    console.log("client", client);
+    await authorize();
+    // console.log("client", client);
     // .then(listEvents)
     // .catch((e) => console.log("eeror", e));
     // const a = await auth.getClient();
