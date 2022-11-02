@@ -7,15 +7,10 @@ const {
   clientEmail,
   apiKey,
   project,
-  keyFile,
   scopes,
-  clientId,
-  clientSecret,
   tokenPath,
-  credentialsPath,
+  keyfilePath,
   contactFailed,
-  redirectUri,
-  credentials,
 } = require("../../config");
 
 // const keys = JSON.parse(fs.readFileSync(keyFile));
@@ -28,59 +23,52 @@ const {
 // const calendar = google.calendar({ version: "v3", project, auth: oauthClient });
 // const auth = new google.auth.GoogleAuth({ keyFile, scopes, keys });
 const loadSavedCredentialsIfExist = async () => {
-  try {
-    const content = await fs.readFile(tokenPath);
-    const credentials = JSON.parse(content);
-    console.log("credentials", credentials);
-    return google.auth.fromJSON(credentials);
-  } catch (err) {
-    console.log(`An err occured ${err}`);
-    return null;
+  const content = fs.readFile(tokenPath, (err, data) => {
+    if (err) return;
+    return data;
+  });
+  if (content) {
+    const cred = JSON.parse(content);
+    return google.auth.fromJSON(cred);
   }
+  return null;
 };
 const saveCredentials = async (client) => {
-  // const content = await fs.readFile(credentialsPath);
-  console.log("credentials", credentials);
-  const keys = JSON.parse(credentials);
-  const payload = JSON.stringify({
-    type: "authorized_user",
-    client_id: keys.client_id,
-    client_secret: keys.clientSecret,
-    refresh_token: client.credentials.refresh_token,
-    redirect_uris: keys.redirect_uris,
+  const content = fs.readFile(keyfilePath, (err, data) => {
+    if (err) return;
+    return data;
   });
-  await fs.writeFile(tokenPath, payload);
+  console.log("content", content);
+  if (content) {
+    const keys = JSON.parse(content);
+    const payload = JSON.stringify({
+      type: "authorized_user",
+      client_id: keys.client_id,
+      client_secret: keys.client_secret,
+      refresh_token: client.credentials.refresh_token,
+      redirect_uris: [keys.redirect_uris],
+    });
+    fs.writeFile(tokenPath, payload, (err, data) => {
+      if (err) console.log("err", err);
+      return data;
+    });
+  }
 };
 const authorize = async () => {
   let client = await loadSavedCredentialsIfExist();
   if (client) return client;
-  client = await authenticate({ scopes, keyfilePath: credentialsPath });
+  client = await authenticate({ scopes, keyfilePath });
   if (client.credentials) await saveCredentials(client);
   return client;
 };
-
 const listEvents = async (auth) => {
-  console.log("auth", auth);
   const calendar = google.calendar({ version: "v3", auth });
   const res = await calendar.events.list({
-    calendarId: "primary",
+    calendarId,
     timeMin: new Date().toISOString(),
-    maxResults: 10,
-    singleEvents: true,
-    orderBy: "startTime",
   });
-  const events = res.data.items;
-  if (!events || events.length === 0) {
-    console.log("No upcoming events found.");
-    return;
-  }
-  console.log("Upcoming 10 events:");
-  events.map((event, i) => {
-    const start = event.start.dateTime || event.start.date;
-    console.log(`${start} - ${event.summary}`);
-  });
+  return res.data.items;
 };
-
 router.get("/", async (req, res) => {
   const { date } = req.params;
   try {
@@ -100,10 +88,11 @@ router.get("/date/:date", async (req, res) => {
 });
 router.get("/accessToken", async (req, res) => {
   try {
-    console.log("credentials", credentials);
-    const a = await authorize().then(listEvents).catch(console.error);
+    const client = await authorize();
+    console.log("client", client);
+    // .then(listEvents)
+    // .catch((e) => console.log("eeror", e));
     // const a = await auth.getClient();
-
     // var calendarEvent = {
     //   summary: "Test Event added by Node.js",
     //   description: "This event was created by Node.js",
@@ -125,7 +114,6 @@ router.get("/accessToken", async (req, res) => {
     //   },
     // };
 
-    console.log("a", a);
     // calendar.events.list({ calendarId }, (err, result) => {
     //   if (err) {
     //     console.log("something wrong ", err);
@@ -139,7 +127,7 @@ router.get("/accessToken", async (req, res) => {
     // });
     res.status(201).json({ success: true, message: "found" });
   } catch (e) {
-    console.log("e", e);
+    console.log("this e", e);
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
