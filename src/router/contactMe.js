@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { contactFailed } = require("./message.config");
+const { contactFailed } = require("../../config");
 
 router.post("/", async (req, res) => {
   const { name, email, subject, message } = req.body;
