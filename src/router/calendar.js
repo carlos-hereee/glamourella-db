@@ -26,12 +26,13 @@ router.get("/events", async (req, res) => {
     const calendar = google.calendar({ version: "v3", auth: client });
     await calendar.events.list({ calendarId, apiKey }, (err, result) => {
       if (err) return;
-      res.status(200).json({ success: true, data: result.data });
+      res.status(200).json({ success: true, events: result.data });
     });
   } catch (e) {
+    console.log("e", e);
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
-router.post("/auth-link", (req, res) => {});
+router.post("/book", (req, res) => {});
 
 module.exports = router;
