@@ -9,7 +9,7 @@ const loadSavedCredentialsIfExist = async () => {
   });
   if (content.toString()) {
     const cred = JSON.parse(content);
-    if (cred?.expiry_date > new Date()) {
+    if (cred?.expiry_date < new Date().getTime()) {
       return null;
     }
     return google.auth.fromJSON(cred);
@@ -27,7 +27,6 @@ const saveCredentials = async (client) => {
       redirect_uris: web.redirect_uris,
       expiry_date: client.credentials.expiry_date,
     });
-
     fs.writeFile(tokenPath, payload, () => {});
   });
 };
@@ -35,6 +34,7 @@ const authorize = async () => {
   let client = await loadSavedCredentialsIfExist();
   if (client) return client;
   client = await authenticate({ scopes, keyfilePath });
+  // console.log("client", client);
   if (client.credentials) await saveCredentials(client);
   return client;
 };

@@ -25,9 +25,7 @@ router.get("/events", async (req, res) => {
     const client = await authorize();
     const calendar = google.calendar({ version: "v3", auth: client });
     calendar.events.list({ calendarId, apiKey }, (err, result) => {
-      // console.log("err", err);
       if (err) return;
-      console.log("result", result);
       res.status(200).json({ success: true, events: result.data });
     });
   } catch (e) {
@@ -35,8 +33,20 @@ router.get("/events", async (req, res) => {
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
-router.post("/book", (req, res) => {
-  console.log("req.body", req.body);
+router.post("/book", async (req, res) => {
+  try {
+    const client = await authorize();
+    const calendar = google.calendar({ version: "v3", auth: client });
+    const data = req.body.content;
+    const event = calendar.events.update(
+      { calendarId, eventId: data.id },
+      { resource: data }
+    );
+    console.log("event", event);
+  } catch (e) {
+    console.log("e", e);
+    res.status(500).json({ success: false, message: contactFailed });
+  }
 });
 
 module.exports = router;
