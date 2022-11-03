@@ -24,8 +24,10 @@ router.get("/events", async (req, res) => {
   try {
     const client = await authorize();
     const calendar = google.calendar({ version: "v3", auth: client });
-    await calendar.events.list({ calendarId, apiKey }, (err, result) => {
+    calendar.events.list({ calendarId, apiKey }, (err, result) => {
+      // console.log("err", err);
       if (err) return;
+      console.log("result", result);
       res.status(200).json({ success: true, events: result.data });
     });
   } catch (e) {
@@ -33,6 +35,8 @@ router.get("/events", async (req, res) => {
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
-router.post("/book", (req, res) => {});
+router.post("/book", (req, res) => {
+  console.log("req.body", req.body);
+});
 
 module.exports = router;
