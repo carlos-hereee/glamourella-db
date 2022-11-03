@@ -54,14 +54,6 @@ const authorize = async () => {
   if (client.credentials) await saveCredentials(client);
   return client;
 };
-const listEvents = async (auth) => {
-  const calendar = google.calendar({ version: "v3", auth });
-  const res = await calendar.events.list({
-    calendarId,
-    timeMin: new Date().toISOString(),
-  });
-  return res.data.items;
-};
 router.get("/", async (req, res) => {
   const { date } = req.params;
   try {
@@ -79,48 +71,15 @@ router.get("/date/:date", async (req, res) => {
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
-router.get("/accessToken", async (req, res) => {
+router.get("/events", async (req, res) => {
   try {
-    await authorize();
-    // console.log("client", client);
-    // .then(listEvents)
-    // .catch((e) => console.log("eeror", e));
-    // const a = await auth.getClient();
-    // var calendarEvent = {
-    //   summary: "Test Event added by Node.js",
-    //   description: "This event was created by Node.js",
-    //   start: {
-    //     dateTime: "2022-06-03T09:00:00-02:00",
-    //     timeZone: "Asia/Kolkata",
-    //   },
-    //   end: {
-    //     dateTime: "2022-06-04T17:00:00-02:00",
-    //     timeZone: "Asia/Kolkata",
-    //   },
-    //   attendees: [],
-    //   reminders: {
-    //     useDefault: false,
-    //     overrides: [
-    //       { method: "email", minutes: 24 * 60 },
-    //       { method: "popup", minutes: 10 },
-    //     ],
-    //   },
-    // };
-
-    // calendar.events.list({ calendarId }, (err, result) => {
-    //   if (err) {
-    //     console.log("something wrong ", err);
-    //   } else {
-    //     if (result.data.items.length > 0) {
-    //       console.log("list", result.data.items);
-    //     } else {
-    //       console.log("no upcoming event ");
-    //     }
-    //   }
-    // });
-    res.status(201).json({ success: true, message: "found" });
+    const client = await authorize();
+    const calendar = google.calendar({ version: "v3", auth: client });
+    await calendar.events.list({ calendarId, apiKey }, (err, result) => {
+      if (err) return;
+      res.status(200).json({ success: true, data: result.data });
+    });
   } catch (e) {
-    console.log("this e", e);
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
