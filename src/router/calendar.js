@@ -1,6 +1,11 @@
 const router = require("express").Router();
 const { google } = require("googleapis");
-const { calendarId, apiKey, contactFailed } = require("../../config");
+const {
+  calendarId,
+  apiKey,
+  contactFailed,
+  bookMessage,
+} = require("../../config");
 const { authorize } = require("../middleware/calendar");
 
 router.get("/", async (req, res) => {
@@ -13,7 +18,6 @@ router.get("/", async (req, res) => {
 });
 router.get("/date/:date", async (req, res) => {
   const { date } = req.params;
-  console.log("req.body", date);
   try {
     res.status(201).json({ success: true, message: "found" });
   } catch {
@@ -38,13 +42,9 @@ router.post("/book", async (req, res) => {
     const client = await authorize();
     const calendar = google.calendar({ version: "v3", auth: client });
     const data = req.body.content;
-    const event = calendar.events.update(
-      { calendarId, eventId: data.id },
-      { resource: data }
-    );
-    console.log("event", event);
+    calendar.events.update({ calendarId, eventId: data.id, resource: data });
+    res.status(200).json({ success: true, message: bookMessage });
   } catch (e) {
-    console.log("e", e);
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
