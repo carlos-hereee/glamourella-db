@@ -7,8 +7,6 @@ module.exports = {
   apiKey: process.env.CALENDAR_API_AKEY,
   accessToken: process.env.CALENDAR_ACCESS_TOKEN,
   clientUrl: process.env.CLIENT_URL,
-  clientEmail: process.env.CLIENT_EMAIL,
-  project: process.env.PROJECT_NUMBER,
   keyfilePath: path.join(process.cwd(), "credentials.json"),
   tokenPath: path.join(process.cwd(), "token.json"),
   scopes: [
