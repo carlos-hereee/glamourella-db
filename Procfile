@@ -1,1 +1,1 @@
-web: npm start
+web: npm start && echo ${GOOGLE_CREDENTIALS} > /app/google-credentials.json
