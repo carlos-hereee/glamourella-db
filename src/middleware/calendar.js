@@ -4,15 +4,19 @@ const fs = require("fs");
 const { scopes, tokenPath, keyfilePath } = require("../../config");
 
 const loadSavedCredentialsIfExist = async () => {
-  const content = fs.readFileSync(tokenPath, (err, _) => {
-    if (err) return null;
-  });
-  if (content.toString()) {
-    const cred = JSON.parse(content);
-    if (cred?.expiry_date < new Date().getTime()) {
-      return null;
+  if (fs.existsSync(tokenPath)) {
+    const content = fs.readFileSync(tokenPath, (err, _) => {
+      if (err) return null;
+    });
+    if (content.toString()) {
+      const cred = JSON.parse(content);
+      if (cred?.expiry_date < new Date().getTime()) {
+        return null;
+      }
+      return google.auth.fromJSON(cred);
     }
-    return google.auth.fromJSON(cred);
+  } else {
+    return null;
   }
 };
 const saveCredentials = async (client) => {
