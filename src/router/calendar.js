@@ -8,22 +8,22 @@ const {
 } = require("../../config");
 const { authorize } = require("../middleware/calendar");
 
-router.get("/", async (req, res) => {
-  const { date } = req.params;
-  try {
-    res.status(201).json({ success: true, message: "found" });
-  } catch {
-    res.status(500).json({ success: false, message: contactFailed });
-  }
-});
-router.get("/date/:date", async (req, res) => {
-  const { date } = req.params;
-  try {
-    res.status(201).json({ success: true, message: "found" });
-  } catch {
-    res.status(500).json({ success: false, message: contactFailed });
-  }
-});
+// router.get("/", async (req, res) => {
+//   const { date } = req.params;
+//   try {
+//     res.status(201).json({ success: true, message: "found" });
+//   } catch {
+//     res.status(500).json({ success: false, message: contactFailed });
+//   }
+// });
+// router.get("/date/:date", async (req, res) => {
+//   const { date } = req.params;
+//   try {
+//     res.status(201).json({ success: true, message: "found" });
+//   } catch {
+//     res.status(500).json({ success: false, message: contactFailed });
+//   }
+// });
 router.get("/events", async (req, res) => {
   try {
     const client = await authorize();

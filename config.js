@@ -5,8 +5,6 @@ module.exports = {
   contactFailed: "could not send email",
   bookMessage: "Appoinment added successfully to your google calendar",
   calendarId: process.env.CALENDAR_ID,
-  apiKey: process.env.CALENDAR_API_AKEY,
-  accessToken: process.env.CALENDAR_ACCESS_TOKEN,
   clientUrl: process.env.CLIENT_URL,
   clientId: process.env.CLIENT_ID,
   keyfilePath: path.join(process.cwd(), "credentials.json"),
