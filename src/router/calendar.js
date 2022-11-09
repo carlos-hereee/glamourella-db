@@ -39,6 +39,18 @@ router.get("/events", async (req, res) => {
 });
 router.post("/book", async (req, res) => {
   try {
+    const data = req.body;
+    // check if the event is still open
+    // if its open add user to event
+    // if  not notify user to pick a different choice
+
+    res.status(200).json({ success: true, message: `${data}` });
+  } catch (e) {
+    res.status(500).json({ success: false, message: contactFailed });
+  }
+});
+router.post("/add-to-google-cal", async (req, res) => {
+  try {
     const client = await authorize();
     const calendar = google.calendar({ version: "v3", auth: client });
     const data = req.body.content;

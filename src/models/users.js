@@ -1,0 +1,17 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const toLower = (str) => str.toLowerCase();
+
+const userSchema = new Schema(
+  {
+    uid: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    email: { type: String, set: toLower },
+  },
+  { timestamps: true }
+);
+
+const Users = mongoose.model("Users", userSchema);
+module.exports = Users;

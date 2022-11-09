@@ -2,6 +2,7 @@ const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
 const fs = require("fs");
 const { scopes, tokenPath, keyfilePath } = require("../../config");
+const { GoogleAuth } = require("google-auth-library");
 
 const loadSavedCredentialsIfExist = async () => {
   if (fs.existsSync(tokenPath)) {
@@ -41,6 +42,16 @@ const authorize = async () => {
   // console.log("client", client);
   if (client.credentials) await saveCredentials(client);
   return client;
+  // const auth = new GoogleAuth({
+  //   scopes,
+  //   keyFilename: "google-credentials.json",
+  // });
+  // const client = await auth.getClient();
+  // console.log("client", client);
+  // const url = `https://dns.googleapis.com/dns/v1/projects/${projectId}`;
+  // const res = await client.request({ url });
+  // console.log("res", res);
+  // console.log("client, projectId", client, );
 };
 
 module.exports = { authorize };
