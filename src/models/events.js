@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const eventSchema = new Schema(
   {
     uid: { type: String, required: true, unique: true },
+    calendarId: { type: String },
     name: { type: String },
     description: { type: String },
     attendee: { type: String },

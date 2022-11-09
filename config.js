@@ -3,7 +3,9 @@ const process = require("process");
 
 module.exports = {
   contactFailed: "could not send email",
-  bookMessage: "Appoinment added successfully to your google calendar",
+  bookingNotFound:
+    "This appointment was not found in calendar, please pick a different appointment",
+  bookMessage: "Appoinment was created successfully!",
   calendarId: process.env.CALENDAR_ID,
   clientUrl: process.env.CLIENT_URL,
   clientId: process.env.CLIENT_ID,

@@ -5,8 +5,10 @@ const {
   apiKey,
   contactFailed,
   bookMessage,
+  bookingNotFound,
 } = require("../../config");
 const { authorize } = require("../middleware/calendar");
+const Event = require("../models/events");
 
 // router.get("/", async (req, res) => {
 //   const { date } = req.params;
@@ -26,26 +28,39 @@ const { authorize } = require("../middleware/calendar");
 // });
 router.get("/events", async (req, res) => {
   try {
-    const client = await authorize();
-    const calendar = google.calendar({ version: "v3", auth: client });
-    calendar.events.list({ calendarId, apiKey }, (err, result) => {
-      if (err) return;
-      res.status(200).json({ success: true, events: result.data });
-    });
+    const events = await Event.find({ calendarId });
+    res.status(200).json(events);
   } catch (e) {
     console.log("e", e);
-    res.status(500).json({ success: false, message: contactFailed });
+    res.status(500).json({ success: false, message: e });
   }
 });
+// router.get("/events", async (req, res) => {
+//   try {
+//     const client = await authorize();
+//     const calendar = google.calendar({ version: "v3", auth: client });
+//     calendar.events.list({ calendarId, apiKey }, (err, result) => {
+//       if (err) return;
+//       console.log("data", result.data);
+//       res.status(200).json({ success: true, events: result.data });
+//     });
+//   } catch (e) {
+//     console.log("e", e);
+//     res.status(500).json({ success: false, message: contactFailed });
+//   }
+// });
 router.post("/book", async (req, res) => {
+  const data = req.body;
   try {
-    const data = req.body;
     // check if the event is still open
-    // if its open add user to event
-    // if  not notify user to pick a different choice
-
-    res.status(200).json({ success: true, message: `${data}` });
+    const event = await Event.findOne({ uid: req.body.id });
+    // if its open add client to event
+    if (event) {
+      res.status(200).json({ success: true, message: bookMessage });
+      // else event is not availible anymore not notify client to pick a different choice
+    } else res.status(404).json({ success: false, message: bookingNotFound });
   } catch (e) {
+    console.log("e", e);
     res.status(500).json({ success: false, message: contactFailed });
   }
 });
