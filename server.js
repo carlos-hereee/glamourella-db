@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const contactRouter = require("./src/router/contactMe");
 const calendarRouter = require("./src/router/calendar");
+const userRouter = require("./src/router/user");
 const bodyParser = require("body-parser");
 
 // env
@@ -22,6 +23,7 @@ app.use(cors({ credentials: true, origin: clientURL }));
 app.use(express.json());
 app.use("/contact-me", contactRouter);
 app.use("/calendar", calendarRouter);
+app.use("/user", userRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "api is running" });
