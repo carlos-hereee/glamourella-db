@@ -5,21 +5,19 @@ const { v4: uuidv4 } = require("uuid");
 const registrationCred = require("../middleware/registration");
 const { generateAccessToken } = require("../middleware/authFunctions");
 const validateCookie = require("../middleware/validateCookie");
+const { cookieName } = require("../../config");
 
 router.get("/", validateCookie, (req, res) => {
   res.status(200).json(req.user);
 });
 router.get("/:uid", validateCookie, async (req, res) => {
-  const { uid } = req.params;
   try {
-    const user = await Users.findOne({ uid });
-    if (user) {
-      res.status(200).json({ message: user });
+    const data = await Users.findOne({ uid: req.params.uid });
+    if (data) {
+      res.status(200).json({ data });
     }
   } catch {
-    res.status(404).json({
-      message: "Couldn't find user with that id",
-    });
+    res.status(404).json({ message: "Couldn't find user with that id" });
   }
 });
 router.post("/register", registrationCred, async (req, res) => {
@@ -32,7 +30,7 @@ router.post("/register", registrationCred, async (req, res) => {
     const newUser = await new Users(user).save();
     // const refreshToken = generateRefreshToken(newUser);
     const accessToken = generateAccessToken(newUser);
-    res.cookie("accessToken", accessToken, { httpOnly: true });
+    res.cookie(cookieName, accessToken, { httpOnly: true });
     res.status(200).json({ user: newUser, accessToken });
   } catch (e) {
     res.status(400).json({ message: "Failed to make user" });
@@ -45,7 +43,7 @@ router.post("/login", async (req, res) => {
     if (bcrypt.compareSync(password, user.password)) {
       // const refreshToken = generateRefreshToken(user);
       const accessToken = generateAccessToken(user);
-      res.status(200).cookie("accessToken", accessToken, { httpOnly: true });
+      res.status(200).cookie(cookieName, accessToken, { httpOnly: true });
       res.json({ user, accessToken: accessToken });
     } else {
       res.status(400).json({ message: "username or password are invalid" });
@@ -55,18 +53,17 @@ router.post("/login", async (req, res) => {
   }
 });
 router.post("/refresh-token", validateCookie, async (req, res) => {
-  const { user } = req;
   // token is valid and send an access token
-  const accessToken = generateAccessToken(user);
-  res.cookie("accessToken", accessToken, { httpOnly: true }).status(200);
-  res.json({ accessToken: accessToken, user: user });
+  const accessToken = generateAccessToken(req.user);
+  res.cookie(cookieName, accessToken, { httpOnly: true }).status(200);
+  res.json({ accessToken: accessToken, user: req.user });
 });
 router.delete("/logout", validateCookie, async (req, res) => {
   try {
     if (req.session) {
       req.session.destroy();
     }
-    res.clearCookie("token");
+    res.clearCookie(cookieName);
     res.status(202).json({ message: "successful logout" });
   } catch {
     res.status(400).json({ message: "error loggin out" });

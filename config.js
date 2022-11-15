@@ -8,6 +8,7 @@ module.exports = {
   bookMessage: "Appoinment was created successfully!",
   accessSecret: process.env.ACCESS_TOKEN_SECRET,
   refreshSecret: process.env.REFRESH_TOKEN_SECRET,
+  cookieName: process.env.COOKIE_NAME,
   calendarId: process.env.CALENDAR_ID,
   clientUrl: process.env.CLIENT_URL,
   clientId: process.env.CLIENT_ID,
