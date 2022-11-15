@@ -1,5 +1,5 @@
 const jsonWebToken = require("jsonwebtoken");
-const { accessTokenSecret, refreshTokenSecret } = require("../../config");
+const { accessSecret, refreshSecret } = require("../../config");
 
 const generateToken = (user, secret, length) => {
   return jsonWebToken.sign(
@@ -9,14 +9,10 @@ const generateToken = (user, secret, length) => {
   );
 };
 const generateAccessToken = (user) => {
-  return generateToken(user, accessTokenSecret, {
-    expiresIn: "2d",
-  });
+  return generateToken(user, accessSecret, { expiresIn: "2d" });
 };
 const generateRefreshToken = (user) => {
-  return generateToken(user, refreshTokenSecret, {
-    expiresIn: "30d",
-  });
+  return generateToken(user, refreshSecret, { expiresIn: "30d" });
 };
 
 module.exports = { generateAccessToken, generateRefreshToken };

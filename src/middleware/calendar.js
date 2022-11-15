@@ -2,7 +2,7 @@ const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
 const fs = require("fs");
 const { scopes, tokenPath, keyfilePath } = require("../../config");
-const { GoogleAuth } = require("google-auth-library");
+// const { GoogleAuth } = require("google-auth-library");
 
 const loadSavedCredentialsIfExist = async () => {
   if (fs.existsSync(tokenPath)) {

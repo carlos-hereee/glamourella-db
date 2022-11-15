@@ -63,7 +63,6 @@ router.post("/refresh-token", validateCookie, async (req, res) => {
 });
 router.delete("/logout", validateCookie, async (req, res) => {
   try {
-    changeOnline(false, req.user._id);
     if (req.session) {
       req.session.destroy();
     }

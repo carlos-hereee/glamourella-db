@@ -6,6 +6,8 @@ module.exports = {
   bookingNotFound:
     "This appointment was not found in calendar, please pick a different appointment",
   bookMessage: "Appoinment was created successfully!",
+  accessSecret: process.env.ACCESS_TOKEN_SECRET,
+  refreshSecret: process.env.REFRESH_TOKEN_SECRET,
   calendarId: process.env.CALENDAR_ID,
   clientUrl: process.env.CLIENT_URL,
   clientId: process.env.CLIENT_ID,
