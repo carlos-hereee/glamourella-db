@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const registrationCred = require("../middleware/registration");
 const { generateAccessToken } = require("../middleware/authFunctions");
 const validateCookie = require("../middleware/validateCookie");
-const { cookieName } = require("../../config");
+const { cookieName, notFoundUser, notFound } = require("../../config");
 
 router.get("/", validateCookie, (req, res) => {
   res.status(200).json(req.user);
@@ -17,7 +17,7 @@ router.get("/:uid", validateCookie, async (req, res) => {
       res.status(200).json({ data });
     }
   } catch {
-    res.status(404).json({ message: "Couldn't find user with that id" });
+    res.status(404).json(notFoundUser);
   }
 });
 router.post("/register", registrationCred, async (req, res) => {
@@ -33,7 +33,7 @@ router.post("/register", registrationCred, async (req, res) => {
     res.cookie(cookieName, accessToken, { httpOnly: true });
     res.status(200).json({ user: newUser, accessToken });
   } catch (e) {
-    res.status(400).json({ message: "Failed to make user" });
+    res.status(400).json(errMakeUser);
   }
 });
 router.post("/login", async (req, res) => {
@@ -46,10 +46,10 @@ router.post("/login", async (req, res) => {
       res.status(200).cookie(cookieName, accessToken, { httpOnly: true });
       res.json({ user, accessToken: accessToken });
     } else {
-      res.status(400).json({ message: "username or password are invalid" });
+      res.status(400).json(errCredentrial);
     }
-  } catch (err) {
-    res.status(404).json({ message: "User does not exist" });
+  } catch {
+    res.status(404).json(notFound);
   }
 });
 router.post("/refresh-token", validateCookie, async (req, res) => {
@@ -64,9 +64,9 @@ router.delete("/logout", validateCookie, async (req, res) => {
       req.session.destroy();
     }
     res.clearCookie(cookieName);
-    res.status(202).json({ message: "successful logout" });
+    res.status(202).json(successfulLogout);
   } catch {
-    res.status(400).json({ message: "error loggin out" });
+    res.status(400).json(errLogout);
   }
 });
 
