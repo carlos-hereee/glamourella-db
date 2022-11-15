@@ -22,6 +22,7 @@ module.exports = {
   clientId: process.env.CLIENT_ID,
   keyfilePath: path.join(process.cwd(), "google-credentials.json"),
   tokenPath: path.join(process.cwd(), "token.json"),
+  filePath: (name) => path.join(process.cwd(), name),
   scopes: [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.events",

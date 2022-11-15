@@ -2,7 +2,7 @@ const router = require("express").Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { galleryEmpty, notFound } = require("../../config");
+const { galleryEmpty, notFound, filePath } = require("../../config");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -15,40 +15,33 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ dest: "assets/", storage: storage });
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+  const imagetypes = [".png", ".PNG", ".jpg"];
   const pathname = req.query.url;
-  if (pathname) {
-    // Path Refinements
-    const filePath = path.join(__dirname, pathname);
+  const file = filePath(pathname);
+  try {
     // Checking if the path exists
-    fs.existsSync(filePath, (exists) => {
-      if (!exists) {
-        return res.status(404).json(notFound);
-      }
+    const data = await fs.existsSync(file);
+    if (data) {
       // Extracting file extension
       const ext = path.extname(pathname);
-      console.log("ext", ext);
-      const imagetypes = [".png", ".PNG", ".jpg"];
       // Setting default Content-Type
-      const contentType = "text/plain";
+      let contentType = "text/plain";
       // Checking if the extension of image is '.png'
       if (imagetypes.includes(ext)) {
         contentType = "image/png";
       }
       // Setting the headers
-      console.log("contentType", contentType);
       res.writeHead(200, { "Content-Type": contentType });
       // Reading the file
-      fs.readFile(filePath, (err, content) => {
-        if (err) {
-          console.log("err", err);
-        }
-        console.log("content", content);
+      fs.readFile(file, (_, content) => {
         // Serving the image
-        return res.send(content);
+        return res.end(content);
       });
-    });
-  } else return res.status(400).json(galleryEmpty);
+    } else return res.status(404).json(notFound);
+  } catch (err) {
+    res.status(400).json(galleryEmpty);
+  }
 });
 router.get("/all-src", (req, res) => {});
 router.post("/profile", upload.single("avatar"), (req, res, next) => {
