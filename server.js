@@ -4,9 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
+const userRouter = require("./src/router/user");
 const contactRouter = require("./src/router/contactMe");
 const calendarRouter = require("./src/router/calendar");
-const userRouter = require("./src/router/user");
+const galleryRouter = require("./src/router/gallery");
 const bodyParser = require("body-parser");
 
 // env
@@ -15,15 +16,17 @@ const uri = process.env.MONGOOSE_URI;
 const clientURL = process.env.CLIENT_URL;
 // set up express app
 const app = express();
+app.use(express.static(__dirname + "/assets"));
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(cors({ credentials: true, origin: clientURL }));
 app.use(express.json());
+app.use("/users", userRouter);
 app.use("/contact-me", contactRouter);
 app.use("/calendar", calendarRouter);
-app.use("/user", userRouter);
+app.use("/gallery", galleryRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "api is running" });
