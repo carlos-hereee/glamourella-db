@@ -14,6 +14,7 @@ module.exports = {
   errCredentrial: "username or password are invalid",
   successfulLogout: "Bye, come back soon",
   errLogout: "Unable to log out",
+  dbUrl: process.env.DB_URL,
   accessSecret: process.env.ACCESS_TOKEN_SECRET,
   refreshSecret: process.env.REFRESH_TOKEN_SECRET,
   cookieName: process.env.COOKIE_NAME,
@@ -22,6 +23,7 @@ module.exports = {
   clientId: process.env.CLIENT_ID,
   keyfilePath: path.join(process.cwd(), "google-credentials.json"),
   tokenPath: path.join(process.cwd(), "token.json"),
+  assetsPath: path.join(process.cwd(), "assets"),
   filePath: (name) => path.join(process.cwd(), name),
   scopes: [
     "https://www.googleapis.com/auth/calendar",

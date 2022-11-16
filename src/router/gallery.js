@@ -2,7 +2,14 @@ const router = require("express").Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { galleryEmpty, notFound, filePath } = require("../../config");
+const {
+  galleryEmpty,
+  notFound,
+  filePath,
+  assetsPath,
+  dbUrl,
+} = require("../../config");
+const { v4: uuidv4 } = require("uuid");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -14,9 +21,38 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ dest: "assets/", storage: storage });
+const imagetypes = [".png", ".PNG", ".jpg"];
 
+const readFolder = (path, data) => {
+  // reader assets folder
+  const filenames = fs.readdirSync(path);
+  // log new paths and old paths
+  const { filePaths } = logPaths(path, filenames, data);
+  if (filePaths && filePaths.length) {
+    filePaths.forEach((ft) => readFolder(ft, data));
+  }
+  return { data };
+};
+const logPaths = (path, filenames, data) => {
+  let filePaths = [];
+  for (let f = 0; f < filenames.length; f++) {
+    const file = filenames[f].split(".");
+    // if it includes image extention
+    if (file[1]) {
+      const fileName = file.join(".");
+      data.push({
+        src: `${dbUrl}/gallery?url=${fileName}`,
+        uid: uuidv4(),
+        fileName,
+        name: file[0],
+      });
+    } else {
+      filePaths.push(`${path}/${file[0]}`);
+    }
+  }
+  return { filePaths };
+};
 router.get("/", async (req, res) => {
-  const imagetypes = [".png", ".PNG", ".jpg"];
   const pathname = req.query.url;
   const file = filePath(pathname);
   try {
@@ -36,14 +72,21 @@ router.get("/", async (req, res) => {
       // Reading the file
       fs.readFile(file, (_, content) => {
         // Serving the image
-        return res.end(content);
+        return res.status(200).end(content);
       });
-    } else return res.status(404).json(notFound);
+    }
   } catch (err) {
-    res.status(400).json(galleryEmpty);
+    res.status(404).json(notFound);
   }
 });
-router.get("/all-src", (req, res) => {});
+router.get("/all", async (req, res) => {
+  try {
+    const { data } = readFolder(assetsPath, []);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(200).json(notFound);
+  }
+});
 router.post("/profile", upload.single("avatar"), (req, res, next) => {
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
