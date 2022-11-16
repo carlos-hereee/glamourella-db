@@ -15,12 +15,13 @@ const port = process.env.PORT;
 const uri = process.env.MONGOOSE_URI;
 const clientURL = process.env.CLIENT_URL;
 // set up express app
+helmet({ crossOriginResourcePolicy: false });
 const app = express();
-app.use(express.static(__dirname + "/assets"));
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
+app.use(express.static(__dirname + "/assets"));
 app.use(cors({ credentials: true, origin: clientURL }));
 app.use(express.json());
 app.use("/users", userRouter);

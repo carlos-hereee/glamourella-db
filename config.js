@@ -4,6 +4,7 @@ const process = require("process");
 module.exports = {
   errMail: "could not send email",
   successMail: "could not send email",
+  serverErr: "Server is down come back in a bit!",
   bookingNotFound:
     "This appointment was not found in calendar, pick a different appointment",
   bookMessage: "Appoinment was created successfully!",
@@ -24,7 +25,7 @@ module.exports = {
   keyfilePath: path.join(process.cwd(), "google-credentials.json"),
   tokenPath: path.join(process.cwd(), "token.json"),
   assetsPath: path.join(process.cwd(), "assets"),
-  filePath: (name) => path.join(process.cwd(), name),
+  filePath: (name) => path.join(process.cwd(), `assets/${name}`),
   scopes: [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.events",

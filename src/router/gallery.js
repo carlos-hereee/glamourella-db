@@ -52,31 +52,17 @@ const logPaths = (path, filenames, data) => {
   }
   return { filePaths };
 };
-router.get("/", async (req, res) => {
+router.get("/", (req, res) => {
   const pathname = req.query.url;
   const file = filePath(pathname);
   try {
     // Checking if the path exists
-    const data = await fs.existsSync(file);
-    if (data) {
-      // Extracting file extension
-      const ext = path.extname(pathname);
-      // Setting default Content-Type
-      let contentType = "text/plain";
-      // Checking if the extension of image is '.png'
-      if (imagetypes.includes(ext)) {
-        contentType = "image/png";
-      }
-      // Setting the headers
-      res.writeHead(200, { "Content-Type": contentType });
-      // Reading the file
-      fs.readFile(file, (_, content) => {
-        // Serving the image
-        return res.status(200).end(content);
-      });
-    }
+    fs.existsSync(file)
+      ? res.status(200).sendFile(file)
+      : res.status(404).json(notFound);
   } catch (err) {
-    res.status(404).json(notFound);
+    console.log("err", err);
+    res.status(500).json(serverErr);
   }
 });
 router.get("/all", async (req, res) => {
