@@ -37,7 +37,13 @@ module.exports = {
     filenames.forEach((file) => {
       // if file has an extension its an assets
       if (file.split(".")[1]) {
-        return data.push({ file, folder: path, path: `${path}/${file}` });
+        return data.push({
+          file,
+          folder: path,
+          path: `${path}/${file}`,
+          src: `${process.env.DB_URL}/gallery/photo/?url=${path}/${file}`,
+          uid: v4(),
+        });
         // else its a folder
       } else folders.push(`${path}/${file}`);
     });

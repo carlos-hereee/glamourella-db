@@ -2,14 +2,13 @@ const router = require("express").Router();
 const fs = require("fs");
 const multer = require("multer");
 const {
-  galleryEmpty,
+  // galleryEmpty,
   notFound,
   filePath,
   readFolder,
-  assetsPath,
-  dbUrl,
+  // assetsPath,
+  // dbUrl,
 } = require("../../config");
-const { v4: uuidv4 } = require("uuid");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -21,9 +20,9 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ dest: "assets/", storage: storage });
-const imagetypes = [".png", ".PNG", ".jpg"];
+// const imagetypes = [".png", ".PNG", ".jpg"];
 
-router.get("/", (req, res) => {
+router.get("/photo/", (req, res) => {
   const pathname = req.query.url;
   const file = filePath(pathname);
   try {
