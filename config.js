@@ -1,5 +1,7 @@
 const path = require("path");
 const process = require("process");
+const fs = require("fs");
+const { v4 } = require("uuid");
 
 module.exports = {
   errMail: "could not send email",
@@ -15,6 +17,10 @@ module.exports = {
   errCredentrial: "username or password are invalid",
   successfulLogout: "Bye, come back soon",
   errLogout: "Unable to log out",
+  scopes: [
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/calendar.events",
+  ],
   dbUrl: process.env.DB_URL,
   accessSecret: process.env.ACCESS_TOKEN_SECRET,
   refreshSecret: process.env.REFRESH_TOKEN_SECRET,
@@ -25,9 +31,15 @@ module.exports = {
   keyfilePath: path.join(process.cwd(), "google-credentials.json"),
   tokenPath: path.join(process.cwd(), "token.json"),
   assetsPath: path.join(process.cwd(), "assets"),
-  filePath: (name) => path.join(process.cwd(), `assets/${name}`),
-  scopes: [
-    "https://www.googleapis.com/auth/calendar",
-    "https://www.googleapis.com/auth/calendar.events",
-  ],
+  filePath: (name) => path.join(process.cwd(), `${name}`),
+  readFolder: (path, folders, data) => {
+    let filenames = fs.readdirSync(path);
+    filenames.forEach((file) => {
+      // if file has an extension its an assets
+      if (file.split(".")[1]) {
+        return data.push({ file, folder: path, path: `${path}/${file}` });
+        // else its a folder
+      } else folders.push(`${path}/${file}`);
+    });
+  },
 };

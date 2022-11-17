@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const multer = require("multer");
-const path = require("path");
 const fs = require("fs");
+const multer = require("multer");
 const {
   galleryEmpty,
   notFound,
   filePath,
+  readFolder,
   assetsPath,
   dbUrl,
 } = require("../../config");
@@ -23,35 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({ dest: "assets/", storage: storage });
 const imagetypes = [".png", ".PNG", ".jpg"];
 
-const readFolder = (path, data) => {
-  // reader assets folder
-  const filenames = fs.readdirSync(path);
-  // log new paths and old paths
-  const { filePaths } = logPaths(path, filenames, data);
-  if (filePaths && filePaths.length) {
-    filePaths.forEach((ft) => readFolder(ft, data));
-  }
-  return { data };
-};
-const logPaths = (path, filenames, data) => {
-  let filePaths = [];
-  for (let f = 0; f < filenames.length; f++) {
-    const file = filenames[f].split(".");
-    // if it includes image extention
-    if (file[1]) {
-      const fileName = file.join(".");
-      data.push({
-        src: `${dbUrl}/gallery?url=${fileName}`,
-        uid: uuidv4(),
-        fileName,
-        name: file[0],
-      });
-    } else {
-      filePaths.push(`${path}/${file[0]}`);
-    }
-  }
-  return { filePaths };
-};
 router.get("/", (req, res) => {
   const pathname = req.query.url;
   const file = filePath(pathname);
@@ -67,10 +38,16 @@ router.get("/", (req, res) => {
 });
 router.get("/all", async (req, res) => {
   try {
-    const { data } = readFolder(assetsPath, []);
+    // reader assets folder
+    let folders = [req.query.path];
+    let data = [];
+    while (folders.length > 0) {
+      readFolder(folders[folders.length - 1], folders, data);
+      folders.shift();
+    }
     res.status(200).json(data);
   } catch (err) {
-    res.status(200).json(notFound);
+    res.status(404).json({ message: notFound, err });
   }
 });
 router.post("/profile", upload.single("avatar"), (req, res, next) => {
