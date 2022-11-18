@@ -36,16 +36,22 @@ module.exports = {
     let filenames = fs.readdirSync(path);
     filenames.forEach((file) => {
       // if file has an extension its an assets
-      if (file.split(".")[1]) {
+      const extension = file.split(".");
+      const artistName =
+        extension[0].includes("unsplash") && extension[0].split("-").join(" ");
+      if (extension[1]) {
         return data.push({
+          uid: v4(),
+          artistName,
           file,
           folder: path,
           path: `${path}/${file}`,
-          src: `${process.env.DB_URL}/gallery/photo/?url=${path}/${file}`,
-          uid: v4(),
+          src: `${process.env.DB_URL}/gallery/photo/?path=${path}/${file}`,
         });
         // else its a folder
-      } else folders.push(`${path}/${file}`);
+      } else {
+        folders.push(`${path}/${file}`);
+      }
     });
   },
 };

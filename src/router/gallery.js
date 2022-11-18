@@ -22,8 +22,8 @@ const storage = multer.diskStorage({
 const upload = multer({ dest: "assets/", storage: storage });
 // const imagetypes = [".png", ".PNG", ".jpg"];
 
-router.get("/photo/", (req, res) => {
-  const pathname = req.query.url;
+router.get("/photo", (req, res) => {
+  const pathname = req.query.path;
   const file = filePath(pathname);
   try {
     // Checking if the path exists
@@ -41,7 +41,7 @@ router.get("/all", async (req, res) => {
     let folders = [req.query.path];
     let data = [];
     while (folders.length > 0) {
-      readFolder(folders[folders.length - 1], folders, data);
+      readFolder(folders[0], folders, data);
       folders.shift();
     }
     res.status(200).json(data);
