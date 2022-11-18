@@ -8,6 +8,7 @@ const userRouter = require("./src/router/user");
 const contactRouter = require("./src/router/contactMe");
 const calendarRouter = require("./src/router/calendar");
 const galleryRouter = require("./src/router/gallery");
+const servicesRouter = require("./src/router/services");
 const bodyParser = require("body-parser");
 
 // env
@@ -26,6 +27,7 @@ app.use(cors({ credentials: true, origin: clientURL }));
 app.use(express.json());
 app.use("/users", userRouter);
 app.use("/contact-me", contactRouter);
+app.use("/services", servicesRouter);
 app.use("/calendar", calendarRouter);
 app.use("/gallery", galleryRouter);
 
