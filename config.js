@@ -46,7 +46,7 @@ module.exports = {
           file,
           folder: path,
           path: `${path}/${file}`,
-          src: `${process.env.DB_URL}/gallery/photo/?path=${path}/${file}`,
+          src: `${process.env.DB_URL}gallery/photo/?path=${path}/${file}`,
         });
         // else its a folder
       } else {
