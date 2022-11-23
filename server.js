@@ -4,12 +4,13 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 const userRouter = require("./src/router/user");
 const contactRouter = require("./src/router/contactMe");
 const calendarRouter = require("./src/router/calendar");
 const galleryRouter = require("./src/router/gallery");
 const servicesRouter = require("./src/router/services");
-const bodyParser = require("body-parser");
+const glamourellaRouter = require("./src/router/glamourella");
 
 // env
 const port = process.env.PORT;
@@ -30,6 +31,7 @@ app.use("/contact-me", contactRouter);
 app.use("/services", servicesRouter);
 app.use("/calendar", calendarRouter);
 app.use("/gallery", galleryRouter);
+app.use("/glamourella", glamourellaRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "api is running" });

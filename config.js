@@ -3,6 +3,12 @@ const process = require("process");
 const fs = require("fs");
 const { v4 } = require("uuid");
 
+const randomNum = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+const lorem =
+  "Lorem ipsum dolor sit amet consectetur adipisicing elit. In numquam molestias deserunt dolore consequuntur cum facere beatae eum nostrum, totam possimus reprehenderit, explicabo voluptate! Minus vero recusandae repellat voluptatibus enim.";
+
 module.exports = {
   errMail: "could not send email",
   successMail: "could not send email",
@@ -40,13 +46,16 @@ module.exports = {
       const artistName =
         extension[0].includes("unsplash") && extension[0].split("-").join(" ");
       if (extension[1]) {
+        const type = path.split("/");
         return data.push({
           uid: v4(),
           artistName,
           file,
-          folder: path,
           path: `${path}/${file}`,
           src: `${process.env.DB_URL}gallery/photo/?path=${path}/${file}`,
+          cost: randomNum(10, 50),
+          description: lorem,
+          type: type[type.length - 1],
         });
         // else its a folder
       } else {
