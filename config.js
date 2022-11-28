@@ -16,6 +16,7 @@ module.exports = {
   bookMessage: "Appoinment was created successfully!",
   galleryEmpty: "Url path is empty and is required",
   notFound: "Not found",
+  userNotFound: "** User not found **",
   notFoundUser: "Couldn't find user with that uid",
   successfulLogout: "Bye, come back soon",
   errServer: "Server is down come back in a bit!",

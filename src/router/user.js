@@ -6,6 +6,7 @@ const registrationCred = require("../middleware/registration");
 const { generateAccessToken } = require("../middleware/authFunctions");
 const validateCookie = require("../middleware/validateCookie");
 const { cookieName, notFoundUser, notFound } = require("../../config");
+const findUser = require("../middleware/validateLogin");
 
 router.get("/", validateCookie, (req, res) => {
   res.status(200).json(req.user);
@@ -36,20 +37,14 @@ router.post("/register", registrationCred, async (req, res) => {
     res.status(400).json(errMakeUser);
   }
 });
-router.post("/login", async (req, res) => {
-  let { username, password } = req.body;
-  try {
-    const user = await Users.findOne({ username });
-    if (bcrypt.compareSync(password, user.password)) {
-      // const refreshToken = generateRefreshToken(user);
-      const accessToken = generateAccessToken(user);
-      res.status(200).cookie(cookieName, accessToken, { httpOnly: true });
-      res.json({ user, accessToken: accessToken });
-    } else {
-      res.status(400).json(errCredentrial);
-    }
-  } catch {
-    res.status(404).json(notFound);
+router.post("/login", findUser, async (req, res) => {
+  if (bcrypt.compareSync(password, req.user.password)) {
+    // const refreshToken = generateRefreshToken(req.user);
+    const accessToken = generateAccessToken(req.user);
+    res.status(200).cookie(cookieName, accessToken, { httpOnly: true });
+    res.json({ user: req.user, accessToken: accessToken });
+  } else {
+    res.status(400).json(errCredentrial);
   }
 });
 router.post("/refresh-token", validateCookie, async (req, res) => {
