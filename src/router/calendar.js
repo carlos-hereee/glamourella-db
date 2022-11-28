@@ -1,13 +1,16 @@
 const router = require("express").Router();
 const { google } = require("googleapis");
 const {
-  calendarId,
   apiKey,
   contactFailed,
   bookMessage,
   bookingNotFound,
 } = require("../../config");
-const { authorize } = require("../middleware/calendar");
+const {
+  authorize,
+  findCalendarEvents,
+  createNewCalendar,
+} = require("../middleware/calendar");
 const Event = require("../models/events");
 
 // router.get("/", async (req, res) => {
@@ -26,10 +29,10 @@ const Event = require("../models/events");
 //     res.status(500).json({ success: false, message: contactFailed });
 //   }
 // });
-router.get("/events", async (req, res) => {
+
+router.get("/events", findCalendarEvents, async (req, res) => {
   try {
-    const events = await Event.find({ calendarId });
-    res.status(200).json(events);
+    console.log("req.events", req.events);
   } catch (e) {
     console.log("e", e);
     res.status(500).json({ success: false, message: e });
@@ -49,6 +52,21 @@ router.get("/events", async (req, res) => {
 //     res.status(500).json({ success: false, message: contactFailed });
 //   }
 // });
+
+router.post("/create-calendar", async (req, res) => {
+  const calendarId = req.headers.calendarid;
+  let calendar = {
+    calendarId,
+    uid: v4(),
+    name: "Lorem",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum, voluptatum.",
+  };
+  const data = createNewCalendar(calendar);
+  if (data.length) {
+    res.status(200).json(data);
+  } else res.status(404).json("not found");
+});
 router.post("/book", async (req, res) => {
   const data = req.body;
   try {
@@ -66,6 +84,7 @@ router.post("/book", async (req, res) => {
 });
 router.post("/add-to-google-cal", async (req, res) => {
   try {
+    const calendarId = req.headers.calendarid;
     const client = await authorize();
     const calendar = google.calendar({ version: "v3", auth: client });
     const data = req.body.content;

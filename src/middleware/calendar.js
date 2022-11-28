@@ -3,6 +3,9 @@ const { google } = require("googleapis");
 const fs = require("fs");
 const { scopes, tokenPath, keyfilePath } = require("../../config");
 // const { GoogleAuth } = require("google-auth-library");
+const Calendar = require("../models/calendar");
+const Event = require("../models/events");
+const { v4 } = require("uuid");
 
 const loadSavedCredentialsIfExist = async () => {
   if (fs.existsSync(tokenPath)) {
@@ -53,5 +56,26 @@ const authorize = async () => {
   // console.log("res", res);
   // console.log("client, projectId", client, );
 };
+const createNewCalendar = async (data) => {
+  const calendar = await new Calendar(data).save();
+  if (calendar.length) {
+    return calendar;
+  }
+};
+const findCalendarEvents = async (req, res, next) => {
+  const calendarId = req.headers.calendarid;
+  if (!calendarId) {
+    res.status(400).json({ success: false, message: errCalId });
+  }
+  const events = await Event.find({ calendarId });
+  if (!events.length) {
+    console.log("events", events);
+    // not found in the database
+    res.status(404).json({ success: false, message: "not found" });
+  } else {
+    req.events = events;
+    next();
+  }
+};
 
-module.exports = { authorize };
+module.exports = { authorize, findCalendarEvents, createNewCalendar };
