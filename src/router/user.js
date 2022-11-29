@@ -11,8 +11,9 @@ const {
   isDev,
 } = require("../../config");
 
-router.get("/", validateCookie, (req, res) => {
-  res.status(200).json(req.user);
+router.get("/", validateCookie, async (req, res) => {
+  const user = await Users.findOne({ uid: req.user.uid });
+  res.status(200).json(user);
 });
 router.get("/:uid", validateCookie, async (req, res) => {
   try {

@@ -1,5 +1,16 @@
+const fs = require("fs");
+const { v4 } = require("uuid");
+
 const readFolder = (path, folders, data) => {
   let filenames = fs.readdirSync(path);
+  let randomNum = (num1, num2) => {
+    return Math.floor(Math.random() * (num1 - num2 + 1) + num2);
+  };
+  let lorem =
+    "Lorem ipsum dolor sit amet consectetur, adipisicing elit." +
+    "Dolor facilis commodi qui optio, quos quidem odio a vitae" +
+    "nulla facere? Rem facilis esse cum earum amet, enim iure" +
+    "tempora eveniet.";
   filenames.forEach((file) => {
     // if file has an extension its an assets
     const extension = file.split(".");
