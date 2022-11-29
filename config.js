@@ -1,13 +1,5 @@
 const path = require("path");
 const process = require("process");
-const fs = require("fs");
-const { v4 } = require("uuid");
-
-const randomNum = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-const lorem =
-  "Lorem ipsum dolor sit amet consectetur adipisicing elit. In numquam molestias deserunt dolore consequuntur cum facere beatae eum nostrum, totam possimus reprehenderit, explicabo voluptate! Minus vero recusandae repellat voluptatibus enim.";
 
 module.exports = {
   successMail: "could not send email",
@@ -32,38 +24,13 @@ module.exports = {
   ],
   isDev: process.env.NODE_ENV === "development",
   dbUrl: process.env.DB_URL,
-  accessSecret: process.env.ACCESS_TOKEN_SECRET,
-  refreshSecret: process.env.REFRESH_TOKEN_SECRET,
   cookieName: process.env.COOKIE_NAME,
+  accessSecret: process.env.ACCESS_SECRET,
+  refreshSecret: process.env.REFRESH_SECRET,
   clientUrl: process.env.CLIENT_URL,
   clientId: process.env.CLIENT_ID,
   keyfilePath: path.join(process.cwd(), "google-credentials.json"),
   tokenPath: path.join(process.cwd(), "token.json"),
   assetsPath: path.join(process.cwd(), "assets"),
   filePath: (name) => path.join(process.cwd(), `${name}`),
-  readFolder: (path, folders, data) => {
-    let filenames = fs.readdirSync(path);
-    filenames.forEach((file) => {
-      // if file has an extension its an assets
-      const extension = file.split(".");
-      const artistName =
-        extension[0].includes("unsplash") && extension[0].split("-").join(" ");
-      if (extension[1]) {
-        const type = path.split("/");
-        return data.push({
-          uid: v4(),
-          artistName,
-          file,
-          path: `${path}/${file}`,
-          src: `${process.env.DB_URL}gallery/photo/?path=${path}/${file}`,
-          cost: randomNum(10, 50),
-          description: lorem,
-          type: type[type.length - 1],
-        });
-        // else its a folder
-      } else {
-        folders.push(`${path}/${file}`);
-      }
-    });
-  },
 };

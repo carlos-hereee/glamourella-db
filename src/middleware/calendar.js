@@ -5,7 +5,6 @@ const { scopes, tokenPath, keyfilePath } = require("../../config");
 // const { GoogleAuth } = require("google-auth-library");
 const Calendar = require("../models/calendar");
 const Event = require("../models/events");
-const { v4 } = require("uuid");
 
 const loadSavedCredentialsIfExist = async () => {
   if (fs.existsSync(tokenPath)) {

@@ -1,20 +1,12 @@
-const jsonWebToken = require("jsonwebtoken");
-const { accessTokenSecret } = require("../../config");
-const Users = require("../models/users");
+const jwt = require("jsonwebtoken");
+const { cookieName, accessSecret } = require("../../config");
 
 module.exports = async (req, res, next) => {
-  const token = req.cookies.accessToken;
-  if (!token) {
-    return res.status(403).json({ accessToken: "" });
+  const token = req.cookies[cookieName];
+  if (token === undefined || token === "undefined") {
+    return res.status(400).json({ accessToken: "" });
   }
-  let payload = jsonWebToken.verify(token, accessTokenSecret);
-  const user = await Users.findOne({
-    $or: [{ username: payload.username }, { uid: payload.uid }],
-  });
-  if (!user) {
-    return res.status(404).json({ message: "user not found" });
-  } else {
-    req.user = user;
-    next();
-  }
+  let payload = jwt.verify(token, accessSecret);
+  req.user = payload;
+  next();
 };

@@ -2,13 +2,13 @@ const router = require("express").Router();
 const fs = require("fs");
 const multer = require("multer");
 const {
-  // galleryEmpty,
   notFound,
+  // galleryEmpty,
   filePath,
-  readFolder,
   // assetsPath,
   // dbUrl,
 } = require("../../config");
+const readFolder = require("../middleware/readFolder");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

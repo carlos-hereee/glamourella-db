@@ -1,16 +1,15 @@
 const router = require("express").Router();
 const Users = require("../models/users");
-const bcrypt = require("bcryptjs");
 const registrationCred = require("../middleware/registration");
-const { generateAccessToken } = require("../middleware/authFunctions");
 const validateCookie = require("../middleware/validateCookie");
+const validateLogin = require("../middleware/validateLogin");
+const { generateAccessToken } = require("../middleware/authFunctions");
 const {
   cookieName,
   notFoundUser,
   errAlreadyExists,
   isDev,
 } = require("../../config");
-const findUser = require("../middleware/validateLogin");
 
 router.get("/", validateCookie, (req, res) => {
   res.status(200).json(req.user);
@@ -29,21 +28,21 @@ router.post("/register", registrationCred, async (req, res) => {
   try {
     const newUser = await new Users(req.user).save();
     res.cookie(cookieName, { accessToken: req.token }, { httpOnly: true });
-    res.status(200).json({ user: newUser, accessToken: req.token });
+    res.status(200).json({ accessToken: req.token });
   } catch (err) {
     isDev && console.log("eerr", err);
     res.status(400).json(errAlreadyExists);
   }
 });
-router.post("/login", findUser, async (req, res) => {
-  res.cookie(cookieName, { accessToken: req.token }, { httpOnly: true });
-  res.status(200).json({ user: req.user, accessToken: req.token });
+router.post("/login", validateLogin, async (req, res) => {
+  res.cookie(cookieName, req.token, { httpOnly: true });
+  res.status(200).json({ accessToken: req.token });
 });
 router.post("/refresh-token", validateCookie, async (req, res) => {
   // token is valid and send an access token
   const accessToken = generateAccessToken(req.user);
   res.cookie(cookieName, accessToken, { httpOnly: true }).status(200);
-  res.json({ accessToken: accessToken, user: req.user });
+  res.json({ accessToken });
 });
 router.delete("/logout", validateCookie, async (req, res) => {
   try {
