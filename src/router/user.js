@@ -28,24 +28,16 @@ router.get("/:uid", validateCookie, async (req, res) => {
 router.post("/register", registrationCred, async (req, res) => {
   try {
     const newUser = await new Users(req.user).save();
-    // const refreshToken = generateRefreshToken(newUser);
-    const accessToken = generateAccessToken(newUser);
-    res.cookie(cookieName, accessToken, { httpOnly: true });
-    res.status(200).json({ user: newUser, accessToken });
+    res.cookie(cookieName, { accessToken: req.token }, { httpOnly: true });
+    res.status(200).json({ user: newUser, accessToken: req.token });
   } catch (err) {
-    isDev && console.log("e", err);
+    isDev && console.log("eerr", err);
     res.status(400).json(errAlreadyExists);
   }
 });
 router.post("/login", findUser, async (req, res) => {
-  if (bcrypt.compareSync(password, req.user.password)) {
-    // const refreshToken = generateRefreshToken(req.user);
-    const accessToken = generateAccessToken(req.user);
-    res.status(200).cookie(cookieName, accessToken, { httpOnly: true });
-    res.json({ user: req.user, accessToken: accessToken });
-  } else {
-    res.status(400).json(errCredentrial);
-  }
+  res.cookie(cookieName, { accessToken: req.token }, { httpOnly: true });
+  res.status(200).json({ user: req.user, accessToken: req.token });
 });
 router.post("/refresh-token", validateCookie, async (req, res) => {
   // token is valid and send an access token

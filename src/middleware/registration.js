@@ -1,7 +1,11 @@
 const Users = require("../models/users");
 const bcrypt = require("bcryptjs");
-const { errAlreadyExists } = require("../../config");
+const { errAlreadyExists, isDev } = require("../../config");
 const { v4 } = require("uuid");
+const {
+  generateRefreshToken,
+  generateAccessToken,
+} = require("./authFunctions");
 
 module.exports = async (req, res, next) => {
   try {
@@ -17,11 +21,14 @@ module.exports = async (req, res, next) => {
         nickname: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
         isOnline: true,
+        lastActiveAt: new Date.now().toLocaleDateString(),
+        refreshToken: generateRefreshToken(req.user),
       };
+      req.token = generateAccessToken(req.user);
       next();
     }
   } catch (err) {
-    console.log("err", err);
+    isDev && console.log("err", err);
     res.status(500).json({ message: "Servers are down" });
   }
 };
