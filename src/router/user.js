@@ -1,11 +1,15 @@
 const router = require("express").Router();
 const Users = require("../models/users");
 const bcrypt = require("bcryptjs");
-const { v4: uuidv4 } = require("uuid");
 const registrationCred = require("../middleware/registration");
 const { generateAccessToken } = require("../middleware/authFunctions");
 const validateCookie = require("../middleware/validateCookie");
-const { cookieName, notFoundUser, notFound } = require("../../config");
+const {
+  cookieName,
+  notFoundUser,
+  errAlreadyExists,
+  isDev,
+} = require("../../config");
 const findUser = require("../middleware/validateLogin");
 
 router.get("/", validateCookie, (req, res) => {
@@ -22,19 +26,15 @@ router.get("/:uid", validateCookie, async (req, res) => {
   }
 });
 router.post("/register", registrationCred, async (req, res) => {
-  let user = req.body;
-  user.password = bcrypt.hashSync(user.password, 10);
-  user.uid = uuidv4();
-  user.nickname = user.username;
-  user.isOnline = true;
   try {
-    const newUser = await new Users(user).save();
+    const newUser = await new Users(req.user).save();
     // const refreshToken = generateRefreshToken(newUser);
     const accessToken = generateAccessToken(newUser);
     res.cookie(cookieName, accessToken, { httpOnly: true });
     res.status(200).json({ user: newUser, accessToken });
-  } catch (e) {
-    res.status(400).json(errMakeUser);
+  } catch (err) {
+    isDev && console.log("e", err);
+    res.status(400).json(errAlreadyExists);
   }
 });
 router.post("/login", findUser, async (req, res) => {
