@@ -29,6 +29,8 @@ module.exports = {
   refreshSecret: process.env.REFRESH_SECRET,
   clientUrl: process.env.CLIENT_URL,
   clientId: process.env.CLIENT_ID,
+  port: process.env.PORT,
+  uri: process.env.MONGOOSE_URI,
   keyfilePath: path.join(process.cwd(), "google-credentials.json"),
   tokenPath: path.join(process.cwd(), "token.json"),
   assetsPath: path.join(process.cwd(), "assets"),

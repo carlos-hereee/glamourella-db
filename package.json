@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "dev": "netlify-lambda serve src",
+    "build": "netlify-lambda build src",
+    "server": "nodemon src/server.js"
   },
   "repository": {
     "type": "git",
@@ -37,6 +39,8 @@
     "mongodb": "^4.11.0",
     "mongoose": "^6.6.7",
     "multer": "^1.4.5-lts.1",
+    "netlify-lambda": "^2.0.15",
+    "serverless-http": "^3.1.0",
     "uuid": "^9.0.0"
   }
 }

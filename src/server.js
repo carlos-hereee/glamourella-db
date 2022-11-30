@@ -5,32 +5,34 @@ const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const userRouter = require("./src/router/user");
-const contactRouter = require("./src/router/contactMe");
-const calendarRouter = require("./src/router/calendar");
-const galleryRouter = require("./src/router/gallery");
-const glamourellaRouter = require("./src/router/glamourella");
+const serverless = require("serverless-http");
+const userRouter = require("./router/user");
+const contactRouter = require("./router/contactMe");
+const calendarRouter = require("./router/calendar");
+const galleryRouter = require("./router/gallery");
+const glamourellaRouter = require("./router/glamourella");
+const { uri, clientUrl, port } = require("../config");
 
-// env
-const port = process.env.PORT;
-const uri = process.env.MONGOOSE_URI;
-const clientURL = process.env.CLIENT_URL;
 // set up express app
-helmet({ crossOriginResourcePolicy: false });
 const app = express();
+const router = express.Router();
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(express.static(__dirname + "/assets"));
-app.use(cors({ credentials: true, origin: clientURL }));
+app.use(cors({ credentials: true, origin: clientUrl }));
 app.use(express.json());
+helmet({ crossOriginResourcePolicy: false });
+// custom routes
 app.use("/users", userRouter);
 app.use("/contact-me", contactRouter);
 app.use("/calendar", calendarRouter);
 app.use("/gallery", galleryRouter);
 app.use("/glamourella", glamourellaRouter);
-
+// netlify confi
+app.use("/.netlify/functions/server", router);
+// starter router
 app.get("/", (req, res) => {
   res.status(200).json({ message: "api is running" });
 });
@@ -47,3 +49,5 @@ mongoose
   .catch((e) => {
     if (process.env.NODE_ENV === "development") console.log("e", e);
   });
+
+module.exports.handler = serverless(app);
