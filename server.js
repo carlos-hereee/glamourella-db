@@ -13,7 +13,7 @@ const galleryRouter = require("./src/router/gallery");
 const glamourellaRouter = require("./src/router/glamourella");
 
 // env
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const uri = process.env.MONGOOSE_URI;
 const clientURL = process.env.CLIENT_URL;
 // set up express app
