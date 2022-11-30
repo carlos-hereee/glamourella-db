@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 });
 // web socket endpoint
 // app.ws("/echo", (ws, req) => ws.on("message", (msg) => ws.send(msg)));
-
+console.log(" port num", port);
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
