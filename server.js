@@ -1,6 +1,7 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
+// const express = require("express-ws");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
@@ -18,6 +19,8 @@ const clientURL = process.env.CLIENT_URL;
 // set up express app
 helmet({ crossOriginResourcePolicy: false });
 const app = express();
+// websocket connection
+// require('express-ws')(app)
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -34,6 +37,8 @@ app.use("/glamourella", glamourellaRouter);
 app.get("/", (req, res) => {
   res.status(200).json({ message: "api is running" });
 });
+// web socket endpoint
+// app.ws("/echo", (ws, req) => ws.on("message", (msg) => ws.send(msg)));
 
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })

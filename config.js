@@ -1,6 +1,7 @@
 const path = require("path");
 const process = require("process");
 
+// configuration variables
 module.exports = {
   successMail: "could not send email",
   bookingNotFound:
