@@ -32,7 +32,7 @@ app.use("/users", userRouter);
 app.use("/contact-me", contactRouter);
 app.use("/calendar", calendarRouter);
 app.use("/gallery", galleryRouter);
-app.use("/glamourella", glamourellaRouter);
+app.use("/app", glamourellaRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "api is running" });

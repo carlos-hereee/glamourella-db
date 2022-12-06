@@ -1,15 +1,7 @@
 const router = require("express").Router();
 const { v4 } = require("uuid");
-const { errMail } = require("../../config");
+const { errMail, lorem, lorem2, lorem3 } = require("../../config");
 
-let lorem = `Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias unde
-      iste tempore iure! Debitis magnam, voluptate autem iusto error fuga odio
-      soluta doloremque. Dolorum, voluptates! A culpa neque non dolores! Lorem
-      ipsum dolor sit amet consectetur adipisicing elit. Nisi nulla voluptatem
-      numquam, eum tempore sit quod ut nesciunt. Iste deleniti officia
-      blanditiis! Commodi doloremque explicabo illo earum dolorum magni nisi.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore eos quas
-      hic, facilis quaerat quos velit alias doloribus nisi tempora?`;
 const socials = [
   {
     social: "instagram",
@@ -26,13 +18,13 @@ const about = [
   },
   {
     title: "My Story",
-    description: lorem,
+    description: lorem2,
     uid: v4(),
     lines: 4,
   },
   {
     title: "Who am I?",
-    description: lorem,
+    description: lorem3,
     uid: v4(),
     lines: 3,
   },
@@ -90,7 +82,7 @@ const services = [
   },
 ];
 
-router.get("/", async (req, res) => {
+router.get("/glamourella/services", async (req, res) => {
   try {
     res.status(200).json({ socials, about, services });
   } catch {
