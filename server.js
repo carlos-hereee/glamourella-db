@@ -13,7 +13,7 @@ const galleryRouter = require("./src/router/gallery");
 const glamourellaRouter = require("./src/router/glamourella");
 
 // env
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 const uri = process.env.MONGOOSE_URI;
 const clientURL = process.env.CLIENT_URL;
 // set up express app
@@ -39,7 +39,6 @@ app.get("/", (req, res) => {
 });
 // web socket endpoint
 // app.ws("/echo", (ws, req) => ws.on("message", (msg) => ws.send(msg)));
-console.log(" port num", port);
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

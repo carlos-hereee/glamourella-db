@@ -1,7 +1,10 @@
 const { userNotFound, errCredentrial } = require("../../config");
 const Users = require("../models/users");
 const bcrypt = require("bcryptjs");
-const { generateAccessToken } = require("./authFunctions");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("./authFunctions");
 
 module.exports = async (req, res, next) => {
   let { username, email, password } = req.body;
@@ -11,6 +14,11 @@ module.exports = async (req, res, next) => {
   } else {
     if (bcrypt.compareSync(password, user.password)) {
       req.user = user;
+      // generate a new refreshToken
+      await Users.updateOne(
+        { uid: req.user.uid },
+        { refreshToken: generateRefreshToken(req.user) }
+      );
       req.token = generateAccessToken(req.user);
       next();
     } else {

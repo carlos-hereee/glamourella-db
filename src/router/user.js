@@ -27,8 +27,8 @@ router.get("/:uid", validateCookie, async (req, res) => {
 });
 router.post("/register", registrationCred, async (req, res) => {
   try {
-    const newUser = await new Users(req.user).save();
-    res.cookie(cookieName, { accessToken: req.token }, { httpOnly: true });
+    await new Users(req.user).save();
+    res.cookie(cookieName, req.token, { httpOnly: true });
     res.status(200).json({ accessToken: req.token });
   } catch (err) {
     isDev && console.log("eerr", err);

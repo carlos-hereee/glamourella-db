@@ -10,7 +10,7 @@ module.exports = {
   galleryEmpty: "Url path is empty and is required",
   notFound: "Not found",
   userNotFound: "** User not found **",
-  errAlreadyExists: "** A user already exists with that email **",
+  errAlreadyExists: "** A user already exists with that username **",
   notFoundUser: "Couldn't find user with that uid",
   successfulLogout: "Bye, come back soon",
   errServer: "Server is down come back in a bit!",

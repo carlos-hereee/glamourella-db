@@ -68,7 +68,6 @@ const findCalendarEvents = async (req, res, next) => {
   }
   const events = await Event.find({ calendarId });
   if (!events.length) {
-    console.log("events", events);
     // not found in the database
     res.status(404).json({ success: false, message: "not found" });
   } else {

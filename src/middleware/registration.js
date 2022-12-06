@@ -16,14 +16,14 @@ module.exports = async (req, res, next) => {
     } else {
       req.user = {
         uid: v4(),
-        username: req.body.email,
-        email: req.body.email,
-        nickname: req.body.email,
+        username: username ? username : req.body.email,
+        email: email ? req.body.email : req.body.username,
+        nickname: username ? username : req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
         isOnline: true,
-        lastActiveAt: new Date.now().toLocaleDateString(),
-        refreshToken: generateRefreshToken(req.user),
+        lastActiveAt: Date.now(),
       };
+      req.user.refreshToken = generateRefreshToken(req.user);
       req.token = generateAccessToken(req.user);
       next();
     }
