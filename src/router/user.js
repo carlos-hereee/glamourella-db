@@ -3,7 +3,10 @@ const Users = require("../models/users");
 const registrationCred = require("../middleware/registration");
 const validateCookie = require("../middleware/validateCookie");
 const validateLogin = require("../middleware/validateLogin");
-const { generateAccessToken } = require("../middleware/authFunctions");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../middleware/authFunctions");
 const {
   cookieName,
   notFoundUser,
@@ -42,6 +45,10 @@ router.post("/login", validateLogin, async (req, res) => {
 router.post("/refresh-token", validateCookie, async (req, res) => {
   // token is valid and send an access token
   const accessToken = generateAccessToken(req.user);
+  await Users.updateOne(
+    { uid: req.user.uid },
+    { refreshToken: generateRefreshToken(req.user) }
+  );
   res.cookie(cookieName, accessToken, { httpOnly: true }).status(200);
   res.json({ accessToken });
 });

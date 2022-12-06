@@ -7,6 +7,7 @@ module.exports = async (req, res, next) => {
     return res.status(400).json("");
   }
   let payload = jwt.verify(token, accessSecret);
+  // TODO: check if cookie is expired
   req.user = payload;
   next();
 };
