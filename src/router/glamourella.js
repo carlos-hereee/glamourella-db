@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { v4 } = require("uuid");
-const { errMail, lorem, lorem2, lorem3 } = require("../../config");
+const { errMail, lorem, lorem2, lorem3, dbUrl } = require("../../config");
 
 const socials = [
   {
@@ -15,25 +15,40 @@ const about = [
     description: lorem,
     uid: v4(),
     lines: 5,
+    img: {
+      src: `${dbUrl}gallery/photo/?path=assets/hair/wig/anthony-smith-chaigneau-unsplash.jpg`,
+      uid: v4(),
+      fileName: "credit to anthony-smith from unsplash",
+    },
   },
   {
     title: "My Story",
     description: lorem2,
     uid: v4(),
     lines: 4,
+    img: {
+      src: `${dbUrl}gallery/photo/?path=assets/glamourella/jeswin-thomas-unsplash.jpg`,
+      uid: v4(),
+      fileName: "credit to jeswin-thomas from unsplash",
+    },
   },
   {
     title: "Who am I?",
     description: lorem3,
     uid: v4(),
     lines: 3,
+    img: {
+      src: `${dbUrl}gallery/photo/?path=assets/manicure/bryony-elena-unsplash.jpg`,
+      uid: v4(),
+      fileName: "credit to bryony-elena from unsplash",
+    },
   },
 ];
 const services = [
   {
     uid: v4(),
     type: "pedicure",
-    src: "http://localhost:4937/gallery/photo/?path=assets/pedicure/billie-unsplash.jpg",
+    src: `${dbUrl}gallery/photo/?path=assets/pedicure/billie-unsplash.jpg`,
     name: "classic ",
     length: "30 minutes",
     cost: 25,
@@ -43,7 +58,7 @@ const services = [
   {
     uid: v4(),
     type: "pedicure",
-    src: "http://localhost:4937/gallery/photo/?path=assets/pedicure/billie-unsplash.jpg",
+    src: `${dbUrl}gallery/photo/?path=assets/pedicure/billie-unsplash.jpg`,
     name: "REFRESHER ",
     length: "45 minutes",
     cost: 35,
@@ -53,7 +68,7 @@ const services = [
   {
     uid: v4(),
     type: "manicure",
-    src: "http://localhost:4937/gallery/photo/?path=assets/manicure/rashid-khreiss-unsplash.jpg",
+    src: `${dbUrl}gallery/photo/?path=assets/manicure/rashid-khreiss-unsplash.jpg`,
     name: "classic ",
     length: "20 minutes",
     cost: 15,
@@ -63,7 +78,7 @@ const services = [
   {
     uid: v4(),
     type: "manicure",
-    src: "http://localhost:4937/gallery/photo/?path=assets/manicure/bryony-elena-unsplash.jpg",
+    src: `${dbUrl}gallery/photo/?path=assets/manicure/bryony-elena-unsplash.jpg`,
     name: "refresher ",
     length: "30 minutes",
     cost: 25,
@@ -73,7 +88,7 @@ const services = [
   {
     uid: v4(),
     type: "manicure",
-    src: "http://localhost:4937/gallery/photo/?path=assets/manicure/kris-atomic-unsplash.jpg",
+    src: `${dbUrl}gallery/photo/?path=assets/manicure/kris-atomic-unsplash.jpg`,
     name: "paris signature ",
     length: "56 minutes",
     cost: 29,

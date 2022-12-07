@@ -63,17 +63,10 @@ const createNewCalendar = async (data) => {
 };
 const findCalendarEvents = async (req, res, next) => {
   const calendarId = req.headers.calendarid;
-  if (!calendarId) {
-    res.status(400).json({ success: false, message: errCalId });
-  }
+  !calendarId && res.status(400).json({ success: false, message: errCalId });
   const events = await Event.find({ calendarId });
-  if (!events.length) {
-    // not found in the database
-    res.status(404).json({ success: false, message: "not found" });
-  } else {
-    req.events = events;
-    next();
-  }
+  req.events = events;
+  next();
 };
 
 module.exports = { authorize, findCalendarEvents, createNewCalendar };

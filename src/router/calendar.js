@@ -32,9 +32,8 @@ const Event = require("../models/events");
 
 router.get("/events", findCalendarEvents, async (req, res) => {
   try {
-    console.log("req.events", req.events);
+    res.status(200).json(req.events);
   } catch (e) {
-    console.log("e", e);
     res.status(500).json({ success: false, message: e });
   }
 });
