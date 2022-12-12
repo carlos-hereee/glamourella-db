@@ -31,8 +31,8 @@ router.get("/:uid", validateCookie, async (req, res) => {
 router.post("/register", registrationCred, async (req, res) => {
   try {
     await new Users(req.user).save();
-    res.cookie(cookieName, req.token, { httpOnly: true });
-    res.status(200).json({ accessToken: req.token });
+    res.cookie(cookieName, req.user.accessToken, { httpOnly: true });
+    res.status(200).json({ accessToken: req.user.accessToken });
   } catch (err) {
     isDev && console.log("eerr", err);
     res.status(400).json(errAlreadyExists);
@@ -47,7 +47,7 @@ router.post("/refresh-token", validateCookie, async (req, res) => {
   const accessToken = generateAccessToken(req.user);
   await Users.updateOne(
     { uid: req.user.uid },
-    { refreshToken: generateRefreshToken(req.user) }
+    { refreshToken: generateRefreshToken(req.user), accessToken }
   );
   res.cookie(cookieName, accessToken, { httpOnly: true }).status(200);
   res.json({ accessToken });

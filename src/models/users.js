@@ -10,6 +10,7 @@ const userSchema = new Schema(
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true, default: false },
+    accessToken: { type: String },
     refreshToken: { type: String },
     lastActiveAt: { type: Date },
   },

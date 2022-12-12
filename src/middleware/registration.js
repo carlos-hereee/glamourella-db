@@ -24,7 +24,7 @@ module.exports = async (req, res, next) => {
         lastActiveAt: Date.now(),
       };
       req.user.refreshToken = generateRefreshToken(req.user);
-      req.token = generateAccessToken(req.user);
+      req.user.accessToken = generateAccessToken(req.user);
       next();
     }
   } catch (err) {
